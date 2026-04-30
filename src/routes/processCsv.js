@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import crypto from "node:crypto";
 import { Transform } from "node:stream";
 import multer from "multer";
 import express from "express";
@@ -19,7 +20,9 @@ function isAiMode(req) {
   return req.query.mode === "ai";
 }
 
-function createProcessingTransform({ useAi }) {
+function createProcessingTransform({ requestId, useAi }) {
+  let processedRows = 0;
+
   return new Transform({
     objectMode: true,
     async transform(row, _encoding, callback) {
@@ -30,9 +33,14 @@ function createProcessingTransform({ useAi }) {
           ? await processRow(reviewText, useAi)
           : { recommended: "", reviewer_segment: "missing_review_text" };
 
+        processedRows += 1;
+
+        if (processedRows === 1 || processedRows % 10 === 0) {
+          console.info(`[${requestId}] processed ${processedRows} rows`);
+        }
+
         callback(null, {
           id: row.id,
-          review_text: reviewText,
           recommended: processed.recommended,
           reviewer_segment: processed.reviewer_segment
         });
@@ -61,9 +69,17 @@ router.post("/process-csv", upload.single("file"), (req, res, next) => {
     return res.status(400).json({ error: "CSV file is required in form field 'file'" });
   }
 
+  const requestId = crypto.randomUUID();
+  const startedAt = Date.now();
+  const mode = isAiMode(req) ? "ai" : "simple";
+
+  console.info(
+    `[${requestId}] /process-csv started mode=${mode} file=${req.file.originalname} size=${req.file.size}`
+  );
+
   const inputStream = fs.createReadStream(req.file.path);
   const parser = createCsvReader();
-  const processor = createProcessingTransform({ useAi: isAiMode(req) });
+  const processor = createProcessingTransform({ requestId, useAi: isAiMode(req) });
   const writer = createCsvWriter();
 
   const cleanup = () => {
@@ -105,6 +121,12 @@ router.post("/process-csv", upload.single("file"), (req, res, next) => {
     next(error);
   });
   writer.once("finish", cleanup);
+  res.once("finish", () => {
+    console.info(`[${requestId}] /process-csv finished in ${Date.now() - startedAt}ms`);
+  });
+  req.once("aborted", () => {
+    console.warn(`[${requestId}] /process-csv request aborted by client`);
+  });
 
   inputStream.pipe(parser).pipe(processor).pipe(writer);
 });

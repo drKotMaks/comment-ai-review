@@ -41,7 +41,6 @@ The service also accepts `content` as an alias for `review_text`, which matches 
 Output CSV columns:
 
 - `id`
-- `review_text`
 - `recommended`
 - `reviewer_segment`
 
