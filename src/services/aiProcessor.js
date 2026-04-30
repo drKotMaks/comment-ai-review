@@ -10,13 +10,23 @@ export async function processReviewWithAi(reviewText) {
 }
 
 async function processReview(reviewText) {
-  collectionReadyPromise ||= ensureReviewsCollection(EMBEDDING_DIMENSIONS);
-  await collectionReadyPromise;
+  await ensureCollectionReady();
 
   const embedding = await createEmbedding(reviewText);
   const neighbors = await searchSimilarReviews(embedding, 11);
 
   return classifyFromNeighbors(neighbors);
+}
+
+async function ensureCollectionReady() {
+  collectionReadyPromise ||= ensureReviewsCollection(EMBEDDING_DIMENSIONS);
+
+  try {
+    await collectionReadyPromise;
+  } catch (error) {
+    collectionReadyPromise = undefined;
+    throw error;
+  }
 }
 
 function withTimeout(promise, timeoutMs) {

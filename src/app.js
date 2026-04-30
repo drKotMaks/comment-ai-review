@@ -1,8 +1,6 @@
-import dotenv from "dotenv";
+import "dotenv/config";
 import express from "express";
 import processCsvRouter from "./routes/processCsv.js";
-
-dotenv.config();
 
 const app = express();
 

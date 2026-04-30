@@ -58,7 +58,8 @@ Seed the `reviews` collection from the included training file:
 OPENAI_API_KEY=... npm run seed:qdrant -- data/train.csv
 ```
 
-The collection uses vectors with size `1536`, matching `text-embedding-3-small`.
+The collection vector size follows `OPENAI_EMBEDDING_MODEL` and `OPENAI_EMBEDDING_DIMENSIONS`.
+By default, `text-embedding-3-large` uses `3072` dimensions and `text-embedding-3-small` uses `1536`.
 
 ## Error Handling
 
