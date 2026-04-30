@@ -1,0 +1,21 @@
+{
+  "name": "comment-ai-backend",
+  "version": "1.0.0",
+  "description": "CSV review processing backend with simple and AI classification modes.",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "seed:qdrant": "node scripts/seed-qdrant.js"
+  },
+  "dependencies": {
+    "@fast-csv/format": "^5.0.5",
+    "@qdrant/js-client-rest": "^1.17.0",
+    "csv-parser": "^3.2.0",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.1",
+    "multer": "^2.1.1",
+    "openai": "^4.104.0"
+  }
+}
