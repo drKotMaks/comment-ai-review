@@ -5,10 +5,20 @@ const POSITIVE_KEYWORDS = [
   "excellent",
   "fantastic",
   "great",
+  "happy",
+  "keeping",
   "love",
   "loved",
   "perfect",
-  "wonderful"
+  "recommend",
+  "wonderful",
+  "в захваті",
+  "задоволена",
+  "ідеально",
+  "люблю",
+  "обожнюю",
+  "рекомендую",
+  "чудов"
 ];
 
 const NEGATIVE_KEYWORDS = [
@@ -16,30 +26,131 @@ const NEGATIVE_KEYWORDS = [
   "bad",
   "cheap",
   "disappointed",
+  "disappointing",
   "hate",
+  "ill fitting",
+  "not recommend",
+  "pass",
   "poor",
   "return",
+  "returned",
+  "returning",
   "terrible",
   "uncomfortable",
-  "worst"
+  "worst",
+  "жахлив",
+  "не рекомендую",
+  "повернула",
+  "повертаю",
+  "розчарована"
 ];
 
 const CATEGORY_KEYWORDS = [
   {
     segment: "fit_and_sizing",
-    keywords: ["size", "sizing", "fit", "fits", "tight", "loose", "petite", "large", "small"]
+    keywords: [
+      "armhole",
+      "bust",
+      "chest",
+      "fit",
+      "fits",
+      "fitting",
+      "hip",
+      "large",
+      "length",
+      "loose",
+      "petite",
+      "run large",
+      "run small",
+      "short",
+      "size",
+      "sizing",
+      "small",
+      "snug",
+      "tight",
+      "waist",
+      "довжин",
+      "завелик",
+      "замал",
+      "розмір",
+      "сидить",
+      "талі",
+      "тісн"
+    ]
   },
   {
     segment: "material_and_quality",
-    keywords: ["fabric", "material", "quality", "stitch", "seam", "cotton", "silk", "knit"]
+    keywords: [
+      "button",
+      "cotton",
+      "fabric",
+      "itchy",
+      "knit",
+      "lining",
+      "material",
+      "quality",
+      "scratchy",
+      "seam",
+      "see through",
+      "sheer",
+      "silk",
+      "stitch",
+      "thin",
+      "unravel",
+      "wash",
+      "zipper",
+      "бавовн",
+      "блискав",
+      "матеріал",
+      "прозор",
+      "тканин",
+      "тонк",
+      "якіст"
+    ]
   },
   {
     segment: "style_and_appearance",
-    keywords: ["style", "color", "pattern", "print", "design", "look", "cute", "flattering"]
+    keywords: [
+      "beautiful",
+      "color",
+      "cute",
+      "design",
+      "flattering",
+      "look",
+      "pattern",
+      "photo",
+      "picture",
+      "print",
+      "style",
+      "unflattering",
+      "вигляд",
+      "візерунок",
+      "дизайн",
+      "колір",
+      "мил",
+      "принт",
+      "стиль"
+    ]
   },
   {
     segment: "overall_wearability_and_value",
-    keywords: ["price", "value", "wear", "versatile", "comfortable", "worth", "everyday"]
+    keywords: [
+      "comfortable",
+      "everyday",
+      "occasion",
+      "practical",
+      "price",
+      "value",
+      "versatile",
+      "wear",
+      "wearable",
+      "worth",
+      "зручн",
+      "носити",
+      "практич",
+      "ціна",
+      "щодня"
+    ]
   }
 ];
 

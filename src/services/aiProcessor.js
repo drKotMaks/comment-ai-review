@@ -10,7 +10,7 @@ export async function processReviewWithAi(reviewText) {
 
 async function processReview(reviewText) {
   const embedding = await createEmbedding(reviewText);
-  const neighbors = await searchSimilarReviews(embedding, 5);
+  const neighbors = await searchSimilarReviews(embedding, 11);
 
   return classifyFromNeighbors(neighbors);
 }

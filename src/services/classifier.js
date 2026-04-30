@@ -1,44 +1,59 @@
+export const REVIEWER_SEGMENTS = new Set([
+  "fit_and_sizing",
+  "material_and_quality",
+  "style_and_appearance",
+  "overall_wearability_and_value"
+]);
+
 export function classifyFromNeighbors(neighbors) {
   if (!Array.isArray(neighbors) || neighbors.length === 0) {
     throw new Error("No neighbors returned from Qdrant");
   }
 
   return {
-    recommended: majorityVote(neighbors, "recommended"),
-    reviewer_segment: mostFrequent(neighbors, "category")
+    recommended: weightedVote(neighbors, "recommended", 1, normalizeRecommended),
+    reviewer_segment: weightedVote(
+      neighbors,
+      "category",
+      "overall_wearability_and_value",
+      normalizeReviewerSegment
+    )
   };
 }
 
-function majorityVote(neighbors, payloadField) {
-  const counts = new Map();
-
-  for (const neighbor of neighbors) {
-    const value = Number(neighbor.payload?.[payloadField]);
-
-    if (Number.isNaN(value)) {
-      continue;
-    }
-
-    counts.set(value, (counts.get(value) || 0) + 1);
+export function normalizeReviewerSegment(value) {
+  if (REVIEWER_SEGMENTS.has(value)) {
+    return value;
   }
 
-  return highestCount(counts, 1);
+  return "overall_wearability_and_value";
 }
 
-function mostFrequent(neighbors, payloadField) {
+function normalizeRecommended(value) {
+  const numericValue = Number(value);
+
+  if (numericValue === 0 || numericValue === 1) {
+    return numericValue;
+  }
+
+  return undefined;
+}
+
+function weightedVote(neighbors, payloadField, fallback, normalizeValue) {
   const counts = new Map();
 
   for (const neighbor of neighbors) {
-    const value = neighbor.payload?.[payloadField];
+    const value = normalizeValue(neighbor.payload?.[payloadField]);
 
-    if (!value) {
+    if (value === undefined) {
       continue;
     }
 
-    counts.set(value, (counts.get(value) || 0) + 1);
+    const weight = typeof neighbor.score === "number" ? Math.max(neighbor.score, 0.001) : 1;
+    counts.set(value, (counts.get(value) || 0) + weight);
   }
 
-  return highestCount(counts, "overall_wearability_and_value");
+  return highestCount(counts, fallback);
 }
 
 function highestCount(counts, fallback) {

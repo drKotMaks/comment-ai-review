@@ -31,7 +31,7 @@ function createProcessingTransform({ requestId, useAi }) {
       try {
         const processed = reviewText
           ? await processRow(reviewText, useAi)
-          : { recommended: "", reviewer_segment: "missing_review_text" };
+          : { recommended: 0, reviewer_segment: "overall_wearability_and_value" };
 
         processedRows += 1;
 
