@@ -1,6 +1,9 @@
 import OpenAI from "openai";
 
-const EMBEDDING_MODEL = process.env.OPENAI_EMBEDDING_MODEL || "text-embedding-3-small";
+export const EMBEDDING_MODEL = process.env.OPENAI_EMBEDDING_MODEL || "text-embedding-3-small";
+export const EMBEDDING_DIMENSIONS = Number(
+  process.env.OPENAI_EMBEDDING_DIMENSIONS || (EMBEDDING_MODEL === "text-embedding-3-large" ? 3072 : 1536)
+);
 const OPENAI_TIMEOUT_MS = Number(process.env.OPENAI_TIMEOUT_MS || 20000);
 const OPENAI_MAX_RETRIES = Number(process.env.OPENAI_MAX_RETRIES || 1);
 
@@ -23,10 +26,16 @@ function getClient() {
 }
 
 export async function createEmbedding(text) {
-  const response = await getClient().embeddings.create({
+  const request = {
     model: EMBEDDING_MODEL,
     input: text
-  });
+  };
+
+  if (process.env.OPENAI_EMBEDDING_DIMENSIONS) {
+    request.dimensions = EMBEDDING_DIMENSIONS;
+  }
+
+  const response = await getClient().embeddings.create(request);
 
   return response.data[0].embedding;
 }

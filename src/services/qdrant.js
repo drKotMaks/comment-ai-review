@@ -29,6 +29,15 @@ export async function ensureReviewsCollection(vectorSize = 1536) {
   const exists = collections.collections.some((collection) => collection.name === COLLECTION_NAME);
 
   if (exists) {
+    const collection = await qdrant.getCollection(COLLECTION_NAME);
+    const existingSize = collection.config?.params?.vectors?.size;
+
+    if (existingSize && existingSize !== vectorSize) {
+      throw new Error(
+        `Qdrant collection "${COLLECTION_NAME}" has vector size ${existingSize}, expected ${vectorSize}`
+      );
+    }
+
     return;
   }
 

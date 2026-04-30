@@ -2,14 +2,14 @@ import "dotenv/config";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import csvParser from "csv-parser";
-import { createEmbedding } from "../src/services/embedding.js";
+import { createEmbedding, EMBEDDING_DIMENSIONS } from "../src/services/embedding.js";
 import { ensureReviewsCollection, getExistingPointIds, upsertReviewPoints } from "../src/services/qdrant.js";
 
 const sourceFile = process.argv[2] || "data/train.csv";
 const BATCH_SIZE = 10;
 const MAX_UPSERT_ATTEMPTS = 3;
 
-await ensureReviewsCollection(1536);
+await ensureReviewsCollection(EMBEDDING_DIMENSIONS);
 
 let batch = [];
 let seeded = 0;

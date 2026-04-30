@@ -59,9 +59,19 @@ async function processRow(reviewText, useAi) {
   try {
     return await processReviewWithAi(reviewText);
   } catch (error) {
-    console.warn(`AI mode failed, falling back to simple mode: ${error.message}`);
+    console.warn(`AI mode failed, falling back to simple mode: ${formatError(error)}`);
     return processReviewSimple(reviewText);
   }
+}
+
+function formatError(error) {
+  const details = error.data || error.response?.data || error.cause?.data;
+
+  if (details) {
+    return `${error.message}: ${JSON.stringify(details)}`;
+  }
+
+  return error.message;
 }
 
 router.post("/process-csv", upload.single("file"), (req, res, next) => {
