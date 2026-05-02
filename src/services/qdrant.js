@@ -15,12 +15,24 @@ function getClient() {
   return client;
 }
 
-export async function searchSimilarReviews(vector, limit = 5) {
-  return getClient().search(COLLECTION_NAME, {
+export async function searchSimilarReviews(vector, limit = 5, options = {}) {
+  const request = {
     vector,
     limit,
     with_payload: true
-  });
+  };
+
+  const excludeIds = Array.isArray(options.excludeIds)
+    ? options.excludeIds.filter((id) => id !== undefined && id !== null)
+    : [];
+
+  if (excludeIds.length > 0) {
+    request.filter = {
+      must_not: [{ has_id: excludeIds }]
+    };
+  }
+
+  return getClient().search(COLLECTION_NAME, request);
 }
 
 export async function ensureReviewsCollection(vectorSize = 1536) {

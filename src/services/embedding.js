@@ -1,9 +1,11 @@
 import OpenAI from "openai";
 
+
 export const EMBEDDING_MODEL = process.env.OPENAI_EMBEDDING_MODEL || "text-embedding-3-small";
 export const EMBEDDING_DIMENSIONS = Number(
   process.env.OPENAI_EMBEDDING_DIMENSIONS || (EMBEDDING_MODEL === "text-embedding-3-large" ? 3072 : 1536)
 );
+
 const OPENAI_TIMEOUT_MS = Number(process.env.OPENAI_TIMEOUT_MS || 20000);
 const OPENAI_MAX_RETRIES = Number(process.env.OPENAI_MAX_RETRIES || 1);
 
